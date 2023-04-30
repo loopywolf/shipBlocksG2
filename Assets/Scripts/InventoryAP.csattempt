@@ -1,0 +1,79 @@
+using System;
+//using System.Collections;
+//using System.Collections.Generic;
+//using System.String;
+using UnityEngine;
+using UnityEngine.U2D;
+using UnityEngine.UI;
+
+public class InventoryAP : MonoBehaviour
+{
+    //class for managing inventory (added to Main Camera)
+    //empty slot is going to be ' ' (SPC)
+    char[] backpack;
+    private int INVENTORY_SIZE = 18; //actually 24
+    public GameObject contentPanel;
+    private Image[,] slotImage = new Image[6,3];
+    public SpriteAtlas libraryOfTiles;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        backpack = new char[INVENTORY_SIZE];
+        for (int i = 0; i < INVENTORY_SIZE; i++)
+            backpack[i] = ' ';  //blank means empty
+
+        //slotImage = new Sprite[6,3];
+
+        /* //I want you to collect all the references to the sprites of the image slots
+        for (int i = 0; i < contentPanel.transform.childCount; i++)
+        {
+            string n = contentPanel.transform.GetChild(i).name;
+            Debug.Log("inventory child slot " + n);          
+            if( n.StartsWith("sample") )// .Substring(0,6)=="sample")
+            {
+                int y = n[6] - '0';
+                int x = n[7] - '0';
+                slotImage[y, x] = contentPanel.transform.GetChild(i).GetComponent<Sprite>();
+                Debug.Log("y=" + y + " x=" + x);
+            }//if sample
+        }//for */
+
+        //I want to try solving this another way - ok this looks like it worked
+        for(int row=0;row<6;row++)
+        {
+            for (int col=0;col<3;col++)
+            {
+                string n = "sample" + row + col;//ref musta been a keyword
+                Transform t = contentPanel.transform.Find(n);   //finds a transform
+                if(t!=null)
+                {
+                    slotImage[row,col] = t.GetComponent<Image>();
+                    Debug.Log("slotImage[" + row + "," + col + "]=" + slotImage[row, col].name);
+                }//not null
+            }//for col
+        }//for row
+
+        //Debug.Log("slotImage=" + slotImage);
+    }//Start
+
+    public void add(char newItem)
+    {
+        //1. find first empty slot
+        for(int i=0;i<INVENTORY_SIZE;i++)
+        {
+            if (backpack[i] == ' ')
+            {
+                backpack[i] = newItem;
+                Debug.Log("Item " + newItem + " added to inventory at " + i);
+                //now, we want to change the display to that 
+                //so how do I find the tile called sample_tile_newItem?
+                //slotImage[0,0] = TileMapAp.tileLibrary.GetSprite("sample-tiles_" + newItem);
+                return; //no need to end the loop
+            }//if empty
+        }//for
+        //2. change slot to chr
+
+    }//F
+
+}//class

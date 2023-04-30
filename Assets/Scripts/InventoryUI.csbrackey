@@ -1,0 +1,26 @@
+using UnityEngine;
+
+//Brackeys from Inventory Code - Making an RPG in Unity (E06)
+
+public class InventoryUI : MonoBehaviour
+{
+    Inventory inventory;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        inventory = Inventory.instance;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }//F
+
+    void updateUI()
+    {
+        Debug.Log("UPDATING UI");
+    }//F
+
+}//class

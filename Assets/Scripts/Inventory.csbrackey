@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+//Brackeys = Making an RPG in Unity E04
+
+public class Inventory : MonoBehaviour
+{
+    #region Singleton
+    public static Inventory instance;
+
+    private void Awake()
+    {
+        if(instance!=null)
+        {
+            Debug.LogWarning("More than one instance of inventory found!");
+            return;
+        }
+        instance = this;
+    }//Awake
+    #endregion
+    public int space = 12;
+    public List<Item> items = new List<Item>();
+    
+    public bool add(Item item)
+    {
+        if (items.Count >= space)
+        {
+            Debug.Log("not enough room");
+            return false;
+        }
+        items.Add(item);
+        return true;
+    }//F
+
+    public void remove(Item item)
+    {
+        items.Remove(item);
+    }//F
+
+}//class

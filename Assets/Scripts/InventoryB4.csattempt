@@ -1,0 +1,27 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class InventoryB4
+{
+    private List<Item> itemList;
+
+    public InventoryB4()
+    {
+        itemList = new List<Item>();
+
+        addItem(new Item { itemType = Item.ItemType.Sword, amount = 1 } );
+        Debug.Log("inventory=" + itemList.Count);
+    }//+
+
+    public void addItem(Item item)
+    {
+        itemList.Add(item);
+    }
+    
+    public List<Item> GetItemList()
+    {
+        return itemList;
+    }//F
+
+}//class

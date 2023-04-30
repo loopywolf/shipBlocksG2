@@ -1,0 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Item
+{
+    public Sprite icon;
+    //public int amount = 0;
+    //public char itemType = ' ';    
+}//class

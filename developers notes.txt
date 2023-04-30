@@ -1,0 +1,24 @@
+Developer Notes: Game#2.2 - Ship Blocks (ie. base blocks, dna blocks)
+
+MILESTONES
+
+1. (v)BEGUN
+2. COMPLETE PLAYABLE CORE
+	The first mission(s) will be you in your little rocketship flying short-range errands and deliveries.  
+		You will see planets, but nothing about them.
+		You will avoid hazards, knowing nothing about them.
+		If you die, you are always put back to this mini rocketship
+		Mission1: You are asked to fly to a planet X, and are given the course, nothing more.
+	You can fly the ship
+		AD turn/set course (very slowly)
+		W/D set forward thrust (0 to 3)
+	Your little man goes back and forth between your 2 components
+	Arrival is noted
+	Planets are visible
+	You have a mission kick off
+3. NEXT STEP
+	You are given a more involved cargo ship
+	Crew wander the ship, AI directing them to give components attention
+	Use LMB to select any component, it gets attention, and focuses your camera.
+	Zoom levels - exterior/sector map, interior ship map
+	Your missions at this level are ...
