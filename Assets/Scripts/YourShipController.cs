@@ -7,7 +7,7 @@ public class YourShipController : MonoBehaviour
     float targetRotation;
     //float currentSpeed = 0f;
     //float targetSpeed = 0f;
-    private Rigidbody2D rb2d;
+    //private Rigidbody2D rb2d;
     //public float moveSpeed;
     private Vector2 input;
     //public LayerMask wallsLayer;
@@ -21,73 +21,138 @@ public class YourShipController : MonoBehaviour
     //private Inventory inventory2;// = new Inventory();
     //[SerializeField] private UI_Inventory uiInventory;
     //tank movement
-    public float ROTATE_SPEED = 4.0f;
+    public float ROTATE_SPEED = 1.0f;
     private float shipTurn;
     //private const float ANGLE_ADJUSTMENT = 90f;
+    public float SlowDown;
+    public float moveSpeed;
+    Vector2 CurrentSpeed;
+
+    //Crashjumper
+    [SerializeField] float thrust = 5f;
+    [SerializeField] float rotateSpeed = 5f;
+    [SerializeField] Rigidbody2D rb2d;
+    [SerializeField] bool stabilizers = false;
+
+    bool thrusting = false;
+    float rotation = 0f;
+    float angularDrag;
+    float linearDrag;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb2d = this.GetComponent<Rigidbody2D>();
+        /* rb2d = this.GetComponent<Rigidbody2D>();
         targetRotation = rb2d.rotation; // this.transform.eulerAngles.z;
+        CurrentSpeed = new Vector2(0f, 0f); */
+        if (rb2d == null)
+        {
+            rb2d = GetComponent<Rigidbody2D>();
+            angularDrag = rb2d.angularDrag;
+            linearDrag = rb2d.drag;
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (targetRotation < rb2d.rotation) shipTurn = -ROTATE_SPEED;
-        else
-        if (targetRotation > rb2d.rotation) shipTurn = ROTATE_SPEED;
-
-        input.x = Input.GetAxisRaw("Horizontal");
-        input.y = Input.GetAxisRaw("Vertical");
-
-        if (input != Vector2.zero)
-        {
-            if (input.x != 0f)
-            {
-                //targetRotation = nearest(rb2d.rotation - input.x * 45f, 45f);
-                targetRotation += input.x * ROTATE_SPEED;
-                //Debug.Log("I. rb2drot=" + rb2d.rotation + " targetRotation=" + targetRotation);
-                //targetRotation = modulo(targetRotation, 45f);
-                //Debug.Log("II. rb2drot="+rb2d.rotation+" targetRotation=" + targetRotation);
-            }//A D rotate
-        }
-
-        Debug.Log("targetRotation=" + targetRotation);
-    }//Update
+        PlayerInput();
+    }
 
     void FixedUpdate()
     {
-        //Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
-        //rb2d.MoveRotation(targetRotation);//.rotation + landerTurn * ROTATE_SPEED * Time.fixedDeltaTime);
-        //rb2d.MoveRotation(rb2d.rotation + landerTurn * ROTATE_SPEED * Time.fixedDeltaTime);
-        /* if (rb2d.rotation != targetRotation)
+        Movement();
+    }
+
+    void PlayerInput()
+    {
+        thrusting = Input.GetKey(KeyCode.W);
+        if (Input.GetKey(KeyCode.A))
         {
-            float turn = targetRotation - rb2d.rotation;
-
-            if (Math.Abs(turn) < ROTATE_SPEED)
-                rb2d.rotation = targetRotation;
-            else
-            {
-                rb2d.rotation = rb2d.rotation + 
-            }
-        }//need to rotate */
-        //rb2d.MoveRotation(Mathf.LerpAngle(rb2d.rotation, targetRotation, ROTATE_SPEED * Time.deltaTime));
-        //OK I want it to rotate in the direction of the turn but stop when it hits a 45 degree mark (snap) YES
-        //looking ahead, this should be good! If you hold it down, he'll keep turning :fingerscrossed\
-
-        float a = Mathf.Abs(targetRotation - rb2d.rotation);
-        if (a < ROTATE_SPEED)
+            rotation = 1f;
+        }
+        else if (Input.GetKey(KeyCode.D))
         {
-            rb2d.MoveRotation(targetRotation);
-            shipTurn = 0f;
-        }//if
+            rotation = -1f;
+        }
+        else
+        {
+            rotation = 0f;
+        }
+        stabilizers = Input.GetKey(KeyCode.S);
+    }
 
-        //Ok, so I want it to turn in the direction of the turn input
-        //rb2d.rotation += landerTurn;
-        rb2d.MoveRotation(rb2d.rotation + shipTurn);
-    }//F
+    void Movement()
+    {
+        if (thrusting)
+        {
+            rb2d.AddForce(this.transform.right * thrust); //was up
+        }
+
+        rb2d.AddTorque(rotation * rotateSpeed);
+        if (stabilizers)
+        {
+            rb2d.angularDrag = 10f;
+            rb2d.drag = 10f;
+        }
+        else
+        {
+            rb2d.angularDrag = angularDrag;
+            rb2d.drag = linearDrag;
+        }
+    }
+
+    // Update is called once per frame
+    void FixedUpdate2()
+    {
+        float dx = Input.GetAxisRaw("Horizontal");
+        float dy = Input.GetAxisRaw("Vertical");
+
+        //Ship controls
+        if (dx != 0)
+        {
+            //shipTransform.eulerAngles = new Vector3(
+            //  shipTransform.eulerAngles.x,
+            //shipTransform.eulerAngles.y,
+            //shipTransform.eulerAngles.z + turnSpeed * dx);
+            rb2d.MoveRotation(rb2d.rotation - ROTATE_SPEED * dx);
+        }//A D rotate
+
+        Vector3 Thrust = Vector3.zero;
+        if (dy != 0)
+        {
+            Thrust = new Vector3(
+                Mathf.Cos(rb2d.transform.rotation.eulerAngles.z * Mathf.Deg2Rad) * dy,
+                Mathf.Sin(rb2d.transform.rotation.eulerAngles.z * Mathf.Deg2Rad) * dy,
+                0f
+                //CurrentSpeed.x + Mathf.Cos(rb2d.transform.rotation.eulerAngles.z * Mathf.Deg2Rad) * dy * moveSpeed,
+                //CurrentSpeed.y + Mathf.Cos(rb2d.transform.rotation.eulerAngles.z * Mathf.Deg2Rad) * dy * moveSpeed
+            );
+            //CurrentSpeed = CurrentSpeed + Thrust;
+
+            //rb2d.velocity = (transform.forward * dy) * 2;
+        }//dy
+
+        if (Thrust != Vector3.zero)
+            rb2d.AddForce(Thrust * moveSpeed); //note this is applies in FixedUpdate
+
+        //transform.Translate(CurrentSpeed * moveSpeed * dy * Time.deltaTime);
+        /*Vector2 newPosition = new Vector2(
+            rb2d.position.x + CurrentSpeed.x,
+            rb2d.position.y + CurrentSpeed.y
+        );
+        rb2d.MovePosition(newPosition); */
+
+        //trying to slow down by vector
+        // float m = CurrentSpeed.magnitude;
+        //CurrentSpeed = CurrentSpeed.normalized * (m / (1.0f + SlowDown));
+
+    }//FIXEDUpdate
+    void FixedUpdate3()
+    {
+        //The code for moving up/down and left/right
+        input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        rb2d.AddForce(input);
+    }
 
 
 }//class

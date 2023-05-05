@@ -10,8 +10,10 @@ MILESTONES
 		If you die, you are always put back to this mini rocketship
 		Mission1: You are asked to fly to a planet X, and are given the course, nothing more.
 	You can fly the ship
-		AD turn/set course (very slowly)
+		(v)AD turn/set course (very slowly)
 		W/D set forward thrust (0 to 3)
+		BUG: the pivot point is not the center
+		little man rotates independently of ship (to always face up)
 	Your little man goes back and forth between your 2 components
 	Arrival is noted
 	Planets are visible
